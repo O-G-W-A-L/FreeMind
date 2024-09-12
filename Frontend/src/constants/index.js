@@ -25,38 +25,12 @@ import {
 } from "../assets";
 
 export const navigation = [
-  {
-    id: "0",
-    title: "Features",
-    url: "#features",
-  },
-  {
-    id: "1",
-    title: "Resources",
-    url: "#resources",
-  },
-  {
-    id: "2",
-    title: "Us",
-    url: "#us",
-  },
-  {
-    id: "3",
-    title: "Roadmap",
-    url: "#roadmap",
-  },
-  {
-    id: "4",
-    title: "New account",
-    url: "#signup",
-    onlyMobile: true,
-  },
-  {
-    id: "5",
-    title: "Sign in",
-    url: "#login",
-    onlyMobile: true,
-  },
+  { id: "0", title: "Features", url: "#features" },
+  { id: "1", title: "Resources", url: "#resources" },
+  { id: "2", title: "Services", url: "#services" },
+  { id: "3", title: "Roadmap", url: "#roadmap" },
+  { id: "4", title: "New account", url: "#signup", onlyMobile: true },
+  { id: "5", title: "Sign in", url: "#signin", onlyMobile: true },
 ];
 
 export const heroIcons = [homeSmile, file02, searchMd, plusSquare];

@@ -47,7 +47,6 @@ const Services = () => {
                 ))}
               </ul>
             </div>
-
            
           </div>
 
@@ -112,7 +111,7 @@ const Services = () => {
                   className="w-full h-full object-cover"
                   width={520}
                   height={400}
-                  alt="Scary robot"
+                  alt="Life is good"
                 />
 
                 <VideoChatMessage />
