@@ -6,7 +6,7 @@ import { LeftLine, RightLine } from "./design/Resources";
 
 const Resources = () => {
   return (
-    <Section className="overflow-hidden" id="Resources">
+    <Section className="overflow-hidden" id="resources">
       <div className="container relative z-2">
         <div className="hidden relative justify-center mb-[6.5rem] lg:flex">
           <img
