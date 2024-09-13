@@ -1,3 +1,4 @@
+import React from 'react';
 import { check } from "../assets";
 import { Resources } from "../constants";
 import Button from "./Button";
@@ -27,13 +28,16 @@ const ResourcesList = () => {
             )}
           </div>
 
-          {/* Update the Button's href to always link to the Articles page */}
+          {/* Button to link to more content based on section type */}
           <Button
             className="w-full mb-6"
-            href="/articles"
+            href={item.link}  // Ensure 'link' is a field in your data
             white={!!item.help}
           >
-            Go to Articles
+            {item.sectionType === 'articles' ? 'Read More Articles' :
+             item.sectionType === 'videos' ? 'Watch More Videos' :
+             item.sectionType === 'games' ? 'Play More Games & Quizzes' :
+             'Learn More'}
           </Button>
 
           <ul>
