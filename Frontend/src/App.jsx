@@ -13,6 +13,8 @@ import Services from "./components/Services";
 import SignUp from "./components/SignUp";
 import SignIn from "./components/SignIn";
 import Articles from "./components/Articles";
+import Videos from "./components/videos";
+import Games from "./components/games";
 
 // Protected route component to restrict access
 const ProtectedRoute = ({ user, children }) => {
@@ -46,8 +48,11 @@ const App = () => {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/articles" element={<Articles />} />
+          <Route path="/videos" element={<Videos />} />
+          <Route path="/games" element={<Games />} />
 
           {/* Protected Routes */}
+          
           <Route 
             path="/" 
             element={

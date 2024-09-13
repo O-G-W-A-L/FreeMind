@@ -111,6 +111,8 @@ export const Resources = [
     id: "0",
     title: "Articles",
     description: "Personalized recommendations",
+    sectionType: "articles",
+    link: "/articles",
     features: [
       "Get to read and understand what happens with you",
       "Personalized recommendations based on your preferences",
@@ -121,6 +123,8 @@ export const Resources = [
     id: "1",
     title: "Vidoes",
     description: "Support videos, priority support, fro professionals",
+    sectionType: "videos",
+    link: "/videos",
     features: [
       "Watch the undenying myeteries of the Human mind",
       "An analytics dashboard to track your conversations",
@@ -131,6 +135,8 @@ export const Resources = [
     id: "2",
     title: "Games and Quizzes",
     description: "Lets have some fun",
+    sectionType: "games",
+    link : "/games",
     features: [
       "Play, reflect and laugh",
       "Personalized recommendations based on your preferences",
