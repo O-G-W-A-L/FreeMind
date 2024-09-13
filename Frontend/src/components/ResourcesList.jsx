@@ -27,12 +27,13 @@ const ResourcesList = () => {
             )}
           </div>
 
+          {/* Update the Button's href to always link to the Articles page */}
           <Button
             className="w-full mb-6"
-            href={item.help ? "/Resources" : "huntertest@gmail.com"}
+            href="/articles"
             white={!!item.help}
           >
-            Get started
+            Go to Articles
           </Button>
 
           <ul>

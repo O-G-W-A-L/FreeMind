@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { onAuthStateChanged } from "firebase/auth"; // Import Firebase auth state change listener
-import { auth } from './firebase-config'; // Make sure your firebase-config is correctly imported
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from './firebase-config';
 import ButtonGradient from "./assets/svg/ButtonGradient";
 import Benefits from "./components/Benefits";
 import Footer from "./components/Footer";
@@ -12,6 +12,7 @@ import Roadmap from "./components/Roadmap";
 import Services from "./components/Services";
 import SignUp from "./components/SignUp";
 import SignIn from "./components/SignIn";
+import Articles from "./components/Articles";
 
 // Protected route component to restrict access
 const ProtectedRoute = ({ user, children }) => {
@@ -44,6 +45,7 @@ const App = () => {
           {/* Public Routes */}
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
+          <Route path="/articles" element={<Articles />} />
 
           {/* Protected Routes */}
           <Route 
