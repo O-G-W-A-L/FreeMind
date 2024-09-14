@@ -13,12 +13,10 @@ const SignIn = () => {
   const handleSignIn = async (e) => {
     e.preventDefault();
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      console.log('User signed in:', userCredential.user);
-      navigate('/');
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate('/'); // Redirect to homepage or desired route after sign-in
     } catch (error) {
       setError(error.message);
-      console.error('Error signing in:', error);
     }
   };
 
@@ -32,7 +30,6 @@ const SignIn = () => {
       setResetMessage('Password reset email sent!');
     } catch (error) {
       setError(error.message);
-      console.error('Error sending password reset email:', error);
     }
   };
 
