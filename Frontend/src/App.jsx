@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from './firebase-config';
 import ButtonGradient from "./assets/svg/ButtonGradient";
@@ -16,35 +16,37 @@ import Articles from "./components/Articles";
 import Videos from "./components/videos";
 import Games from "./components/games";
 
-// Protected route component to restrict access
-const ProtectedRoute = ({ user, children }) => {
+const ProtectedRoute = ({ user }) => {
   if (!user) {
-    // If the user is not logged in, redirect them to SignIn
-    return <Navigate to="/signin" />;
+    return <Navigate to="/signin" replace />;
   }
-  // If the user is authenticated, render the protected content
-  return children;
+  return <Outlet />;
 };
 
 const App = () => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Set up Firebase auth listener
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser); // Update the user state
+      setUser(currentUser);
+      setLoading(false);
     });
 
-    // Clean up the subscription
     return () => unsubscribe();
   }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
       <div className="pt-[4.75rem] lg:pt-[5.25rem] overflow-hidden">
-        <Header />
+        <Header user={user} />
         <Routes>
           {/* Public Routes */}
+          <Route path="/" element={<Hero />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/articles" element={<Articles />} />
@@ -52,19 +54,12 @@ const App = () => {
           <Route path="/games" element={<Games />} />
 
           {/* Protected Routes */}
-          
-          <Route 
-            path="/" 
-            element={
-              <ProtectedRoute user={user}>
-                <Hero />
-                <Benefits />
-                <Services />
-                <Resources />
-                <Roadmap />
-              </ProtectedRoute>
-            } 
-          />
+          <Route element={<ProtectedRoute user={user} />}>
+            <Route path="/benefits" element={<Benefits />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/resources" element={<Resources />} />
+            <Route path="/roadmap" element={<Roadmap />} />
+          </Route>
         </Routes>
 
         <Footer />
