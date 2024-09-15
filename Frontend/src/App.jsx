@@ -15,6 +15,7 @@ import SignIn from "./components/SignIn";
 import Articles from "./components/Articles";
 import Videos from "./components/videos";
 import Games from "./components/games";
+import ChatSystem from "./components/ChatSystem";
 
 const ProtectedRoute = ({ user }) => {
   if (!user) {
@@ -59,6 +60,7 @@ const App = () => {
             <Route path="/services" element={<Services />} />
             <Route path="/resources" element={<Resources />} />
             <Route path="/roadmap" element={<Roadmap />} />
+            <Route path="/chat" element={<ChatSystem user={user} />} />
           </Route>
         </Routes>
 

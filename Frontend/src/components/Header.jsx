@@ -42,6 +42,7 @@ const Header = ({ user }) => {
     { id: 'services', title: 'Services', url: '/services' },
     { id: 'resources', title: 'Resources', url: '/resources' },
     { id: 'roadmap', title: 'Roadmap', url: '/roadmap' },
+    { id: 'chat', title: 'Chat', url: '/chat' },
   ];
 
   return (
