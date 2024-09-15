@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
 import { auth } from '../firebase-config';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
@@ -6,12 +7,16 @@ const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate(); // Initialize the useNavigate hook
 
   const handleSignUp = async (e) => {
     e.preventDefault();
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       console.log('User signed up:', userCredential.user);
+
+      // Redirect to the sign-in page after successful sign-up
+      navigate('/signin');
     } catch (error) {
       setError(error.message);
       console.error('Error signing up:', error);
