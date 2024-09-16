@@ -1,21 +1,31 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
-import { auth } from '../firebase-config';
+import { useNavigate } from 'react-router-dom';
+import { auth, db } from '../firebase-config';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { setDoc, doc } from 'firebase/firestore';
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [displayName, setDisplayName] = useState('');
+  const [isProfessional, setIsProfessional] = useState(false);
   const [error, setError] = useState('');
-  const navigate = useNavigate(); // Initialize the useNavigate hook
+  const navigate = useNavigate();
 
   const handleSignUp = async (e) => {
     e.preventDefault();
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      console.log('User signed up:', userCredential.user);
+      const user = userCredential.user;
 
-      // Redirect to the sign-in page after successful sign-up
+      // Create user document in Firestore
+      await setDoc(doc(db, 'users', user.uid), {
+        email: user.email,
+        displayName: displayName,
+        isProfessional: isProfessional,
+      });
+
+      console.log('User signed up:', user);
       navigate('/signin');
     } catch (error) {
       setError(error.message);
@@ -53,6 +63,30 @@ const SignUp = () => {
               className="w-full mt-1 p-2 border border-n-6 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 bg-n-8 text-n-1"
               style={{ fontFamily: 'var(--font-code)' }}
             />
+          </div>
+          <div>
+            <label htmlFor="displayName" className="block text-sm font-medium text-n-1">Display Name:</label>
+            <input
+              id="displayName"
+              type="text"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              required
+              className="w-full mt-1 p-2 border border-n-6 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 bg-n-8 text-n-1"
+              style={{ fontFamily: 'var(--font-code)' }}
+            />
+          </div>
+          <div className="flex items-center">
+            <input
+              id="isProfessional"
+              type="checkbox"
+              checked={isProfessional}
+              onChange={(e) => setIsProfessional(e.target.checked)}
+              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+            />
+            <label htmlFor="isProfessional" className="ml-2 block text-sm text-n-1">
+              I am a mental health professional
+            </label>
           </div>
           <button
             type="submit"
