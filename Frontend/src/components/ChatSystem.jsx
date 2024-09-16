@@ -79,7 +79,6 @@ const ChatSystem = () => {
   };
 
   const startPrivateChat = async (otherUserId) => {
-    // Check if a private chat already exists
     const existingChat = chats.find(chat => 
       !chat.isGroup && chat.participants.includes(otherUserId) && chat.participants.length === 2
     );
@@ -87,7 +86,6 @@ const ChatSystem = () => {
     if (existingChat) {
       setCurrentChat(existingChat);
     } else {
-      // Create a new private chat
       const otherUser = await getUserInfo(otherUserId);
       createNewChat(null, [otherUserId], false);
     }
@@ -96,6 +94,12 @@ const ChatSystem = () => {
   const getUserInfo = async (userId) => {
     const userDoc = await getDocs(doc(db, 'users', userId));
     return userDoc.data();
+  };
+
+  const handleLongPress = (userId) => {
+    if (currentChat.isGroup && userId !== user.uid) {
+      startPrivateChat(userId);
+    }
   };
 
   return (
@@ -114,6 +118,7 @@ const ChatSystem = () => {
           sendMessage={sendMessage}
           currentUser={user}
           openSidebar={() => setIsMobileSidebarOpen(true)}
+          onLongPress={handleLongPress}
         />
       ) : (
         <div className="flex-grow flex items-center justify-center p-4">
@@ -121,12 +126,12 @@ const ChatSystem = () => {
         </div>
       )}
       <NewChatModal
-      isOpen={isNewChatModalOpen}
-      onClose={() => setIsNewChatModalOpen(false)}
-      createNewChat={createNewChat}
-      startPrivateChat={startPrivateChat}
-      currentUser={user}
-/>
+        isOpen={isNewChatModalOpen}
+        onClose={() => setIsNewChatModalOpen(false)}
+        createNewChat={createNewChat}
+        startPrivateChat={startPrivateChat}
+        currentUser={user}
+      />
     </div>
   );
 };
