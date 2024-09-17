@@ -1,71 +1,70 @@
 import React, { useState, useEffect } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../firebase-config';
 
 const NewChatModal = ({ isOpen, onClose, createNewChat, startPrivateChat, currentUser }) => {
   const [chatName, setChatName] = useState('');
-  const [selectedUser, setSelectedUser] = useState('');
-  const [isGroup, setIsGroup] = useState(true);
-  const [users, setUsers] = useState([]);
-  const [professionals, setProfessionals] = useState([]);
+  const [selectedUsers, setSelectedUsers] = useState([]);
+  const [isGroup, setIsGroup] = useState(false);
+  const [availableUsers, setAvailableUsers] = useState([]);
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      if (currentUser && currentUser.uid) {
-        const usersSnapshot = await getDocs(collection(db, 'users'));
-        const usersData = usersSnapshot.docs
-          .map(doc => ({ id: doc.id, ...doc.data() }))
-          .filter(user => user.id !== currentUser.uid);
-        setUsers(usersData);
+    if (isOpen && currentUser) {
+      fetchUsers();
+    }
+  }, [isOpen, currentUser]);
 
-        const professionalsData = usersData.filter(user => user.isProfessional);
-        setProfessionals(professionalsData);
-      } else {
-        console.error("Current user is not available");
-      }
-    };
+  const fetchUsers = async () => {
+    if (!currentUser) {
+      console.log("Current user is not available");
+      return;
+    }
+    try {
+      const usersRef = collection(db, 'users');
+      const q = query(usersRef, where('uid', '!=', currentUser.uid));
+      const querySnapshot = await getDocs(q);
+      const users = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setAvailableUsers(users);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
 
-    fetchUsers();
-  }, [currentUser]);
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Form submitted");
     console.log("Is Group:", isGroup);
-    console.log("Selected User:", selectedUser);
+    console.log("Selected Users:", selectedUsers);
 
     if (isGroup) {
       console.log("Creating group chat");
-      const participantList = selectedUser.split(',').map(p => p.trim());
-      createNewChat(chatName, participantList, true);
+      await createNewChat(chatName, selectedUsers, true);
     } else {
       console.log("Creating private chat");
-      if (selectedUser) {
-        console.log("Starting private chat with:", selectedUser);
-        startPrivateChat(selectedUser);
-      } else {
-        console.error("No user selected for private chat");
+      if (selectedUsers.length > 0) {
+        console.log("Starting private chat with:", selectedUsers[0]);
+        await startPrivateChat(selectedUsers[0]);
       }
     }
-    setChatName('');
-    setSelectedUser('');
-    setIsGroup(true);
     onClose();
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-8 max-w-md w-full">
-        <h2 className="text-2xl font-bold mb-4">Create New Chat</h2>
+    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
+      <div className="bg-white p-5 rounded-lg shadow-xl max-w-md w-full">
+        <h2 className="text-xl font-bold mb-4">Start a New Chat</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2">
               <input
                 type="checkbox"
                 checked={isGroup}
-                onChange={(e) => setIsGroup(e.target.checked)}
+                onChange={(e) => {
+                  setIsGroup(e.target.checked);
+                  setSelectedUsers([]);
+                }}
                 className="mr-2"
               />
               Group Chat
@@ -87,28 +86,28 @@ const NewChatModal = ({ isOpen, onClose, createNewChat, startPrivateChat, curren
             </div>
           )}
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="participants">
-              {isGroup ? 'Participants' : 'User'}
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Select Users
             </label>
             <select
-              id="participants"
-              value={selectedUser}
-              onChange={(e) => setSelectedUser(e.target.value)}
+              multiple={isGroup}
+              value={isGroup ? selectedUsers : selectedUsers[0] || ''}
+              onChange={(e) => {
+                const values = Array.from(e.target.selectedOptions, option => option.value);
+                setSelectedUsers(isGroup ? values : [values[0]]);
+              }}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             >
-              <option value="">Select a user</option>
-              {(isGroup ? users : professionals).map(user => (
-                <option key={user.id} value={user.id}>
-                  {user.displayName || user.email}
-                </option>
+              {availableUsers.map(user => (
+                <option key={user.uid} value={user.uid}>{user.displayName || user.email}</option>
               ))}
             </select>
           </div>
           <div className="flex items-center justify-between">
             <button
               type="submit"
-              className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               onClick={() => console.log("Create Chat button clicked")}
             >
               Create Chat
@@ -119,7 +118,7 @@ const NewChatModal = ({ isOpen, onClose, createNewChat, startPrivateChat, curren
                 console.log("Cancel button clicked");
                 onClose();
               }}
-              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300"
+              className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             >
               Cancel
             </button>
