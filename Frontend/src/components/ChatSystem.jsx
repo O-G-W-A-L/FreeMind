@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db, auth } from '../firebase-config';
-import { collection, query, where, orderBy, onSnapshot, addDoc, serverTimestamp, updateDoc, doc, getDocs } from 'firebase/firestore';
+import { collection, query, where, orderBy, onSnapshot, addDoc, serverTimestamp, updateDoc, doc, getDocs, getDoc, arrayUnion } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import ChatSidebar from './ChatSidebar';
 import ChatWindow from './ChatWindow';
@@ -48,12 +48,18 @@ const ChatSystem = () => {
 
   const sendMessage = async (text) => {
     if (currentChat && text.trim()) {
-      await addDoc(collection(db, 'chats', currentChat.id, 'messages'), {
+      const messageData = {
         text,
         sender: user.uid,
-        senderName: user.displayName,
         timestamp: serverTimestamp()
-      });
+      };
+
+      // Only include senderName for group chats
+      if (currentChat.isGroup) {
+        messageData.senderName = user.displayName;
+      }
+
+      await addDoc(collection(db, 'chats', currentChat.id, 'messages'), messageData);
 
       await updateDoc(doc(db, 'chats', currentChat.id), {
         lastMessage: text,
@@ -73,7 +79,15 @@ const ChatSystem = () => {
       isGroup
     });
 
-    setCurrentChat({ id: newChatRef.id, name, participants: isGroup ? [user.uid, ...participants] : [user.uid, participants[0]], isGroup });
+    // Update all participants' documents
+    const allParticipants = isGroup ? [user.uid, ...participants] : [user.uid, participants[0]];
+    for (const participantId of allParticipants) {
+      await updateDoc(doc(db, 'users', participantId), {
+        chats: arrayUnion(newChatRef.id)
+      });
+    }
+
+    setCurrentChat({ id: newChatRef.id, name, participants: allParticipants, isGroup });
     setIsNewChatModalOpen(false);
     setIsMobileSidebarOpen(false);
   };
@@ -86,14 +100,17 @@ const ChatSystem = () => {
     if (existingChat) {
       setCurrentChat(existingChat);
     } else {
-      const otherUser = await getUserInfo(otherUserId);
-      createNewChat(null, [otherUserId], false);
+      await createNewChat(null, [otherUserId], false);
     }
   };
 
   const getUserInfo = async (userId) => {
-    const userDoc = await getDocs(doc(db, 'users', userId));
-    return userDoc.data();
+    if (typeof userId !== 'string') {
+      console.error('Invalid userId:', userId);
+      return null;
+    }
+    const userDoc = await getDoc(doc(db, 'users', userId));
+    return userDoc.exists() ? { id: userDoc.id, ...userDoc.data() } : null;
   };
 
   const handleLongPress = (userId) => {
