@@ -82,12 +82,15 @@ const Header = ({ user }) => {
         </nav>
 
         {user ? (
-          <button
-            onClick={handleSignOut}
-            className="button hidden mr-8 text-n-1/50 transition-colors hover:text-n-1 lg:block"
-          >
-            Sign Out
-          </button>
+          <div className="hidden lg:flex items-center">
+            <span className="mr-4 text-n-1">{user.displayName}</span>
+            <button
+              onClick={handleSignOut}
+              className="button text-n-1/50 transition-colors hover:text-n-1"
+            >
+              Sign Out
+            </button>
+          </div>
         ) : (
           <>
             <Link
