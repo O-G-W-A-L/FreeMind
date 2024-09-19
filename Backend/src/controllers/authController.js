@@ -1,16 +1,18 @@
-const { db, auth } = require('../config/firebaseConfig');
+const { db, auth } = require('../config/firebase-config'); // Path to firebase-config is correct
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 // Register a new user
 exports.register = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, displayName, isProfessional } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     await db.collection('users').doc(email).set({
       email,
       password: hashedPassword,
-      createdAt: admin.firestore.Timestamp.now()
+      displayName,
+      isProfessional,
+      createdAt: admin.firestore.Timestamp.now() // Ensure 'admin' is defined or imported
     });
     res.status(201).json({ message: 'User registered' });
   } catch (error) {
@@ -33,4 +35,3 @@ exports.login = async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 };
-
