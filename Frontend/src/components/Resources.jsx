@@ -4,12 +4,12 @@ import { smallSphere, stars } from "../assets";
 import Heading from "./Heading";
 import ResourcesList from "./ResourcesList";
 import { LeftLine, RightLine } from "./design/Resources";
-import EmergencyNumbers from "./EmergencyNumbers";  // Import EmergencyNumbers
+import EmergencyNumbers from "./EmergencyNumbers";
 
 const Resources = () => {
   return (
     <>
-      <EmergencyNumbers /> {/* Add EmergencyNumbers component */}
+      <EmergencyNumbers />
       <Section className="overflow-hidden" id="resources">
         <div className="container relative z-2">
           <div className="hidden relative justify-center mb-[6.5rem] lg:flex">
