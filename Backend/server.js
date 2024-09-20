@@ -3,6 +3,14 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const exerciseRoutes = require('./src/routes/exerciseRoutes');
 
+const corsOptions = {
+  origin: 'http://localhost:5173',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
+
 const app = express();
 const port = 5000;
 
