@@ -2,6 +2,10 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const exerciseRoutes = require('./src/routes/exerciseRoutes');
+const chatRoutes = require('./src/routes/chatRoutes');
+
+const app = express();
+const port = 5000;
 
 const corsOptions = {
   origin: 'http://localhost:5173',
@@ -10,11 +14,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
-const app = express();
-const port = 5000;
-
-app.use(cors());
 app.use(bodyParser.json());
 
 // Logging middleware
@@ -25,6 +24,9 @@ app.use((req, res, next) => {
 
 // Use the exercise routes
 app.use('/api/exercises', exerciseRoutes);
+
+// Use the chat routes (handles both bot and normal chat)
+app.use('/api/chat', chatRoutes);
 
 // Test route
 app.get('/api/test', (req, res) => {
