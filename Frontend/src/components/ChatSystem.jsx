@@ -1,10 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { db, auth } from '../firebase-config';
-import { collection, query, where, orderBy, onSnapshot, addDoc, serverTimestamp, updateDoc, doc, getDocs, getDoc, arrayUnion } from 'firebase/firestore';
+import { 
+  collection, 
+  query, 
+  where, 
+  orderBy, 
+  onSnapshot, 
+  addDoc, 
+  serverTimestamp, 
+  updateDoc, 
+  doc, 
+  getDoc, 
+  arrayUnion 
+} from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import ChatSidebar from './ChatSidebar';
 import ChatWindow from './ChatWindow';
 import NewChatModal from './NewChatModal';
+import { sendMessageToAIChat } from '../api';
 
 const ChatSystem = () => {
   const [user, setUser] = useState(null);
@@ -27,7 +40,7 @@ const ChatSystem = () => {
       const chatsRef = collection(db, 'chats');
       const q = query(chatsRef, where('participants', 'array-contains', user.uid));
       const unsubscribe = onSnapshot(q, (snapshot) => {
-        setChats(snapshot.docs.map(doc => ({id: doc.id, ...doc.data()})));
+        setChats(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
       });
 
       return () => unsubscribe();
@@ -39,7 +52,7 @@ const ChatSystem = () => {
       const messagesRef = collection(db, 'chats', currentChat.id, 'messages');
       const q = query(messagesRef, orderBy('timestamp'));
       const unsubscribe = onSnapshot(q, (snapshot) => {
-        setMessages(snapshot.docs.map(doc => ({id: doc.id, ...doc.data()})));
+        setMessages(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
       });
 
       return () => unsubscribe();
@@ -51,50 +64,95 @@ const ChatSystem = () => {
       const messageData = {
         text,
         sender: user.uid,
-        timestamp: serverTimestamp()
+        timestamp: serverTimestamp(),
+        ...(currentChat.isGroup && { senderName: user.displayName }),
       };
 
-      // Only include senderName for group chats
-      if (currentChat.isGroup) {
-        messageData.senderName = user.displayName;
-      }
-
+      // Add user's message to Firestore
       await addDoc(collection(db, 'chats', currentChat.id, 'messages'), messageData);
 
+      // Update chat's last message info
       await updateDoc(doc(db, 'chats', currentChat.id), {
         lastMessage: text,
-        lastMessageTimestamp: serverTimestamp()
+        lastMessageTimestamp: serverTimestamp(),
+      });
+
+      // AI Integration: If it's an AI chat, process the message and generate a response
+      if (currentChat.isAI) {
+        try {
+          const aiResponse = await generateAIResponse(text);
+          await sendAIMessage(aiResponse);
+        } catch (error) {
+          console.error('Error generating AI response:', error);
+          const errorMessage = {
+            text: "Sorry, I couldn't process that. Please try again.",
+            sender: 'AI',
+            timestamp: serverTimestamp(),
+            senderName: 'AI Assistant',
+          };
+          await addDoc(collection(db, 'chats', currentChat.id, 'messages'), errorMessage);
+          await updateDoc(doc(db, 'chats', currentChat.id), {
+            lastMessage: errorMessage.text,
+            lastMessageTimestamp: serverTimestamp(),
+          });
+        }
+      }
+    }
+  };
+
+  const sendAIMessage = async (text) => {
+    if (currentChat && text.trim()) {
+      const messageData = {
+        text,
+        sender: 'AI',
+        timestamp: serverTimestamp(),
+        senderName: 'AI Assistant',
+      };
+
+      // Add AI message to Firestore
+      await addDoc(collection(db, 'chats', currentChat.id, 'messages'), messageData);
+
+      // Update chat's last message info
+      await updateDoc(doc(db, 'chats', currentChat.id), {
+        lastMessage: text,
+        lastMessageTimestamp: serverTimestamp(),
       });
     }
   };
 
-  const createNewChat = async (name, participants, isGroup) => {
+  const generateAIResponse = async (userMessage) => {
+    // Call the backend API to get AI response
+    const aiResponse = await sendMessageToAIChat(userMessage);
+    return aiResponse;
+  };
+
+  const createNewChat = async (name, participants, isGroup, isAI = false) => {
     const newChatRef = await addDoc(collection(db, 'chats'), {
-      name: isGroup ? name : null,
-      participants: isGroup ? [user.uid, ...participants] : [user.uid, participants[0]],
+      name: isGroup || isAI ? name : null,
+      participants: isGroup ? [user.uid, ...participants] : isAI ? [user.uid] : [user.uid, participants[0]],
       createdBy: user.uid,
       createdAt: serverTimestamp(),
       lastMessage: '',
       lastMessageTimestamp: null,
-      isGroup
+      isGroup,
+      isAI,
     });
 
-    // Update all participants' documents
-    const allParticipants = isGroup ? [user.uid, ...participants] : [user.uid, participants[0]];
+    const allParticipants = isGroup ? [user.uid, ...participants] : isAI ? [user.uid] : [user.uid, participants[0]];
     for (const participantId of allParticipants) {
       await updateDoc(doc(db, 'users', participantId), {
-        chats: arrayUnion(newChatRef.id)
+        chats: arrayUnion(newChatRef.id),
       });
     }
 
-    setCurrentChat({ id: newChatRef.id, name, participants: allParticipants, isGroup });
+    setCurrentChat({ id: newChatRef.id, name, participants: allParticipants, isGroup, isAI });
     setIsNewChatModalOpen(false);
     setIsMobileSidebarOpen(false);
   };
 
   const startPrivateChat = async (otherUserId) => {
     const existingChat = chats.find(chat => 
-      !chat.isGroup && chat.participants.includes(otherUserId) && chat.participants.length === 2
+      !chat.isGroup && !chat.isAI && chat.participants.includes(otherUserId) && chat.participants.length === 2
     );
 
     if (existingChat) {
