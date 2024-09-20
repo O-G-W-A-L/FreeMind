@@ -5,18 +5,18 @@ import Tagline from "./Tagline";
 import { roadmap } from "../constants";
 import { check2, grid, loading1 } from "../assets";
 import { Gradient } from "./design/Roadmap";
-import EmergencyNumbers from "./EmergencyNumbers";  // Import EmergencyNumbers
+import EmergencyNumbers from "./EmergencyNumbers";
 
 const Roadmap = () => (
   <>
-    <EmergencyNumbers /> {/* Add EmergencyNumbers component */}
+    <EmergencyNumbers />
     <Section className="overflow-hidden" id="roadmap">
       <div className="container md:pb-10">
         <Heading tag="Ready to get started" title="What we’re working on" />
 
         <div className="relative grid gap-6 md:grid-cols-2 md:gap-4 md:pb-[7rem]">
           {roadmap.map((item) => {
-            const status = item.status === "done" ? "Done" : "In progress";
+            const status = item.status === "in progress" ? "progress" : "In progress";
 
             return (
               <div
@@ -42,7 +42,7 @@ const Roadmap = () => (
                       <div className="flex items-center px-4 py-1 bg-n-1 rounded text-n-8">
                         <img
                           className="mr-2.5"
-                          src={item.status === "done" ? check2 : loading1}
+                          src={item.status === "in progress" ? check2 : loading1}
                           width={16}
                           height={16}
                           alt={status}
@@ -72,7 +72,7 @@ const Roadmap = () => (
         </div>
 
         <div className="flex justify-center mt-12 md:mt-15 xl:mt-20">
-          <Button href="/roadmap">The Healing roadmap</Button>
+          <Button href="/roadmap">The Heal & Detox</Button>
         </div>
       </div>
     </Section>

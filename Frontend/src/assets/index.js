@@ -27,7 +27,6 @@ import service3 from "./services/service-3.png";
 import lines from "./resources/lines.svg";
 import stars from "./resources/stars.svg";
 import coins from "./roadmap/coins.png";
-import done from "./roadmap/done.svg";
 import hero from "./roadmap/hero.png";
 import roadmap1 from "./roadmap/image-1.png";
 import roadmap2 from "./roadmap/image-2.png";
@@ -81,7 +80,6 @@ export {
   lines,
   stars,
   coins,
-  done,
   hero,
   roadmap1,
   roadmap2,
