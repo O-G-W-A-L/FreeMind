@@ -19,7 +19,7 @@ import chromecast from "./chrome-cast.svg";
 import sliders04 from "./sliders-04.svg";
 import background from "./background.jpg";
 import curve from "./hero/curve.png";
-import robot from "./hero/hero.png";
+import hero from "./hero/hero.png";
 import heroBackground from "./hero/hero-background.png";
 import service1 from "./services/service-1.png";
 import service2 from "./services/service-2.png";
@@ -27,7 +27,7 @@ import service3 from "./services/service-3.png";
 import lines from "./resources/lines.svg";
 import stars from "./resources/stars.svg";
 import coins from "./roadmap/coins.png";
-import hero from "./roadmap/hero.png";
+//import roadmap from "./roadmap/game.png";
 import roadmap1 from "./roadmap/image-1.png";
 import roadmap2 from "./roadmap/image-2.png";
 import roadmap3 from "./roadmap/image-3.png";
@@ -72,7 +72,6 @@ export {
   sliders04,
   background,
   curve,
-  robot,
   heroBackground,
   service1,
   service2,
