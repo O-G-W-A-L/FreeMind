@@ -1,16 +1,21 @@
+## FreeMind
+## 🤖 Introduction
+
+FreeMind - A Modern website, developed to help put mor smiles and bring more awareness of mental health. Its sleek design, seamless animations, and overall user experience set a high standard, serving as a reference or inspiration for future modern applications or websites in general.
+
 ## Project Information
 
-Please note that Sukoon is an ongoing project. Features and the technology stack may evolve as development progresses. Any updates or changes will be reflected in the README file to keep you informed.
+Please note that FreeMind is an ongoing project. Features and the technology stack may evolve as development progresses. Any updates or changes will be reflected in the README file to keep you informed.
 
-#### Update : the development of this project was started around August 2023 and finished by 1 December 2023. We no longer aim to update it as frequently as previously. 
+#### Update : The development of this project was started around September, 2023 as a ALX Portfolio Project and develpment is still ongoing 
 
-## Tech Stack
+## ⚙️ Tech Stack
 
-**Client:** HTML, CSS, React.Js
+**Client:** HTML, Tailwind CSS, React.Js
 
 **Server:** Node.Js, Express, Firebase
 
-**APIs:** JokeAPI, MemeGen API
+**APIs:** ExerciseDB, OpenAI API
 
 ## Author
 
