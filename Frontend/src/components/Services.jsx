@@ -17,8 +17,8 @@ const Services = () => {
       <Section id="services">
         <div className="container">
           <Heading
-            title="Generative AI made for depressed people."
-            text="FreeMind unlocks the potential of Mental AI-powered applications"
+            title="Generative AI made for all"
+            text="FreeMind unlocks the potential of Mental AI-powered solutions"
           />
 
           <div className="relative">
@@ -60,7 +60,7 @@ const Services = () => {
                     className="h-full w-full object-cover"
                     width={630}
                     height={750}
-                    alt="robot"
+                    alt="hero"
                   />
                 </div>
 

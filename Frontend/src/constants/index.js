@@ -4,22 +4,13 @@ import {
   benefitIcon3,
   benefitIcon4,
   benefitImage2,
-  chromecast,
-  disc02,
   discordBlack,
   facebook,
-  file02,
-  homeSmile,
   instagram,
-  plusSquare,
-  recording01,
-  recording03,
   roadmap1,
   roadmap2,
   roadmap3,
   roadmap4,
-  searchMd,
-  sliders04,
   telegram,
   twitter,
 } from "../assets";
@@ -33,7 +24,6 @@ export const navigation = [
   { id: "5", title: "Sign in", url: "#signin", onlyMobile: true },
 ];
 
-export const heroIcons = [homeSmile, file02, searchMd, plusSquare];
 
 export const companyLogos = []
 
@@ -44,11 +34,7 @@ export const freemindServices = [
 ];
 
 export const freemindServicesIcons = [
-  recording03,
-  recording01,
-  disc02,
-  chromecast,
-  sliders04,
+
 ];
 
 export const roadmap = [
@@ -64,7 +50,7 @@ export const roadmap = [
   {
     id: "1",
     title: "Gamification",
-    text: "Add game-like elements, such as badges or leaderboards, to incentivize users to engage with the chatbot more frequently.",
+    text: "Add well crafted games to address specific mental heaalth issues which gets users to engage with themselves more frequently.",
     date: "Dec 2024",
     status: "progress",
     imageUrl: roadmap2,
@@ -80,7 +66,7 @@ export const roadmap = [
   {
     id: "3",
     title: "Integration with APIs",
-    text: "Allow the chatbot to access external data sources, such as weather APIs or news APIs, to provide more relevant recommendations.",
+    text: "Allow the chatbot to access external data sources, e.g. news APIs, to provide more relevant recommendations.",
     date: "Dec 2024",
     status: "progress",
     imageUrl: roadmap4,
@@ -115,8 +101,8 @@ export const Resources = [
     link: "/articles",
     features: [
       "Get to read and understand what happens with you",
-      "Personalized recommendations based on your preferences",
-      "Ability to explore the app and its features without any cost",
+      "Conetent is always hidden in books",
+      "Read, Learn, Share, Health, Be Happy",
     ],
   },
   {
@@ -127,8 +113,9 @@ export const Resources = [
     link: "/videos",
     features: [
       "Watch the undenying myeteries of the Human mind",
-      "An analytics dashboard to track your conversations",
-      "Priority support to solve issues quickly",
+      "Learn, Enjoy, Laugh",
+      "Learn, Enjoy, Laugh",
+      "Learn, Enjoy, Laugh"
     ],
   },
   {
@@ -139,8 +126,8 @@ export const Resources = [
     link : "/games",
     features: [
       "Play, reflect and laugh",
-      "Personalized recommendations based on your preferences",
-      "Ability to explore the app and its features without any cost",
+      "Heal while enjoying some games",
+      "Play, reflect, Heal, Help",
     ],
   },
 ];
